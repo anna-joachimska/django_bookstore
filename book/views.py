@@ -24,6 +24,10 @@ class BooksView(generics.GenericAPIView):
             raise serializers.ValidationError({"message": "You must pass a data to create a Book"})
 
         serializer = self.serializer_class(data=request.data)
+
+        if len(serializer.initial_data['name'])<0:
+            return Response({"status":"fail", "message":"Book name cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
+
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "book": serializer.data}, status=status.HTTP_201_CREATED)
@@ -95,8 +99,7 @@ class BookBookstore(generics.GenericAPIView):
             return Response({"status": "fail", "message": f"Book with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(
-            book, data=request.data, partial=True)
+        serializer = self.serializer_class(book, data=request.data, partial=True)
 
         for i in range(0, len(request.data['bookstores'])):
             if book.bookstores.filter(pk=request.data['bookstores'][i]).exists():
