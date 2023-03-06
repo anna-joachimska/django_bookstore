@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import PublishingHousesView, PublishingHouseDetail, PublishingHouseBooks
+from .views import PublishingHousesView, PublishingHouseDetail
 
 urlpatterns = [
     path('', PublishingHousesView.as_view()),
     path('<str:pk>', PublishingHouseDetail.as_view()),
-    path('add-books/<str:pk>', PublishingHouseBooks.as_view()),
 ]
