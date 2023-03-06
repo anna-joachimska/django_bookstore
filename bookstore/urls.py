@@ -4,5 +4,5 @@ from .views import BookstoresView, BookstoreDetail, AddOrDeletePublishingHouseFr
 urlpatterns = [
     path('', BookstoresView.as_view()),
     path('<str:pk>', BookstoreDetail.as_view()),
-    path('add-or-delete-publishing-house/<str:pk>', AddOrDeletePublishingHouseFromBookstore.as_view()),
+    path('add-or-remove-publishing-house/<str:pk>', AddOrDeletePublishingHouseFromBookstore.as_view()),
 ]
