@@ -80,7 +80,7 @@ class BookstoreDetail(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AddOrDeletePublishingHouseFromBookstore(generics.GenericAPIView):
+class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
     queryset = Bookstore.objects.all()
     serializer_class = BookstoreSerializer
 
