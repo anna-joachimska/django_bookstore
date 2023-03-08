@@ -1,5 +1,5 @@
 from .models import Bookstore
-from .serializers import BookstoreSerializer
+from .serializers import BookstoreSerializer, AddPublishingHouseToBookstoreSerializer
 from rest_framework.response import Response
 from rest_framework import serializers, generics
 from rest_framework import status
@@ -82,7 +82,7 @@ class BookstoreDetail(generics.GenericAPIView):
 
 class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
     queryset = Bookstore.objects.all()
-    serializer_class = BookstoreSerializer
+    serializer_class = AddPublishingHouseToBookstoreSerializer
 
     def get_bookstore(self, pk):
         try:

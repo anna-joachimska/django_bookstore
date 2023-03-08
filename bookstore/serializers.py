@@ -6,3 +6,9 @@ class BookstoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookstore
         fields = '__all__'
+
+
+class AddPublishingHouseToBookstoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookstore
+        fields = 'publishing_houses'

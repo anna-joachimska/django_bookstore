@@ -1,5 +1,5 @@
 from .models import Book
-from .serializers import BookSerializer
+from .serializers import BookSerializer, AddBookstoreToBookSerializer
 from rest_framework.response import Response
 from rest_framework import serializers, generics
 from rest_framework import status
@@ -84,7 +84,7 @@ class BookDetail(generics.GenericAPIView):
 
 class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
     queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    serializer_class = AddBookstoreToBookSerializer
 
     def get_book(self, pk):
         try:
@@ -107,7 +107,7 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
             return Response({"status": "fail", "message": f"Book with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(book, data=request.data, partial=True)
+        serializer = self.serializer_class(book, book=book,data=request.data, partial=True)
         if serializer.is_valid():
 
             new_bookstore_list = []

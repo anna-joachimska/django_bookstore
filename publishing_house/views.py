@@ -3,6 +3,7 @@ from .serializers import PublishingHouseSerializer
 from rest_framework.response import Response
 from rest_framework import serializers, generics
 from rest_framework import status
+from book.models import Book
 
 
 class PublishingHousesView(generics.GenericAPIView):
@@ -18,8 +19,6 @@ class PublishingHousesView(generics.GenericAPIView):
         })
 
     def post(self, request):
-        if not (request.data):
-            raise serializers.ValidationError({"message": "You must pass a data to create a Publishing House"})
 
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -64,10 +63,12 @@ class PublishingHouseDetail(generics.GenericAPIView):
     def delete(self, request, pk):
         publishing_house = self.get_publishing_house(pk)
         serializer = self.serializer_class(publishing_house)
+
         if publishing_house is None:
             return Response({"status": "fail", "message": f"Publishing House with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
-        if len(serializer.data['books']) > 0:
+
+        if len(Book.objects.all().filter(publishing_house=pk)) > 0:
             return Response({"status": "fail", "message": 'you cannot delete publishing house with books in it'},
                             status=status.HTTP_400_BAD_REQUEST)
 
