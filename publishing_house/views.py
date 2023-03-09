@@ -1,7 +1,7 @@
 from .models import PublishingHouse
 from .serializers import PublishingHouseSerializer
 from rest_framework.response import Response
-from rest_framework import serializers, generics
+from rest_framework import generics
 from rest_framework import status
 from book.models import Book
 
@@ -19,11 +19,10 @@ class PublishingHousesView(generics.GenericAPIView):
         })
 
     def post(self, request):
-
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"status": "success", "publishing house": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({"status": "success", "publishing_house": serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -45,7 +44,7 @@ class PublishingHouseDetail(generics.GenericAPIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.serializer_class(publishing_house)
-        return Response({"status": "success", "publishing house": serializer.data})
+        return Response({"status": "success", "publishing_house": serializer.data})
 
     def patch(self, request, pk):
         publishing_house = self.get_publishing_house(pk)
@@ -57,12 +56,11 @@ class PublishingHouseDetail(generics.GenericAPIView):
             publishing_house, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"status": "success", "publishing house": serializer.data})
+            return Response({"status": "success", "publishing_house": serializer.data})
         return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         publishing_house = self.get_publishing_house(pk)
-        serializer = self.serializer_class(publishing_house)
 
         if publishing_house is None:
             return Response({"status": "fail", "message": f"Publishing House with id: {pk} not found"},
@@ -73,5 +71,5 @@ class PublishingHouseDetail(generics.GenericAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         publishing_house.delete()
-        return Response({"status": "success", "message": "publishing house deleted succesfully"},
+        return Response({"status": "success", "message": "publishing_house deleted successfully"},
                         status=status.HTTP_204_NO_CONTENT)

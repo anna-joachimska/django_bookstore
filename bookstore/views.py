@@ -18,9 +18,6 @@ class BookstoresView(generics.GenericAPIView):
         })
 
     def post(self, request):
-        if not (request.data):
-            raise serializers.ValidationError({"message": "You must pass a data to create a Bookstore"})
-
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -55,16 +52,17 @@ class BookstoreDetail(generics.GenericAPIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.serializer_class(bookstore, data=request.data, partial=True)
-        try:
+        if 'publishing_houses' in request.data.keys():
+            new_publishing_houses_list = []
+            old_publishing_houses_list = []
             for publishing_house in request.data['publishing_houses']:
                 if bookstore.publishing_houses.filter(pk=publishing_house).exists():
-                    return Response({"status": "fail", "message": "this publishing house already is in this bookstore"},
+                    old_publishing_houses_list.append(publishing_house)
+                else:
+                    new_publishing_houses_list.append(publishing_house)
+            if len(old_publishing_houses_list) > 0:
+                    return Response({"status": "fail", "message": "this publishing houses already are in this bookstore", "existing_publishing_houses":old_publishing_houses_list},
                                     status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"status": "success", "bookstore": serializer.data})
-            return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "bookstore": serializer.data})
@@ -117,14 +115,14 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
                 else:
                     new_publishing_houses_list.append(publishing_house)
             if len(old_publishing_houses_list) > 0:
-                return Response({"status": "fail", "message": "this publishing house already is in this bookstore"},
+                return Response({"status": "fail", "message": "this publishing house already are in this bookstore", "existing_publishing_houses":old_publishing_houses_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for publishing_house in new_publishing_houses_list:
                     bookstore.publishing_houses.add(publishing_house)
 
             return Response(
-                {"status": "success", "message": "publishing house added succesfully", "bookstore": serializer.data})
+                {"status": "success", "message": "publishing house added successfully", "bookstore": serializer.data})
 
         return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -141,17 +139,16 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
             old_publishing_house_list = []
             for publishing_house in request.data['publishing_houses']:
                 if not bookstore.publishing_houses.filter(pk=publishing_house).exists():
-                    old_publishing_house_list.append(publishing_house)
-                else:
                     new_publishing_house_list.append(publishing_house)
-
-            if len(old_publishing_house_list) > 0:
-                return Response({"status": "fail", "message": "this publishing house isn't in this bookstore"},
+                else:
+                    old_publishing_house_list.append(publishing_house)
+            if len(new_publishing_house_list) > 0:
+                return Response({"status": "fail", "message": "this publishing house arent't in this bookstore", "publishing_houses_to_remove":new_publishing_house_list,"existing_publishing_houses":old_publishing_house_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
-                for publishing_house in new_publishing_house_list:
+                for publishing_house in old_publishing_house_list:
                     bookstore.publishing_houses.remove(publishing_house)
 
             return Response(
-                {"status": "success", "message": "publishing house deleted succesfully", "bookstore": serializer.data})
+                {"status": "success", "message": "publishing house deleted successfully", "bookstore": serializer.data})
         return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
