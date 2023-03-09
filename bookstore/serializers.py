@@ -11,4 +11,4 @@ class BookstoreSerializer(serializers.ModelSerializer):
 class AddPublishingHouseToBookstoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookstore
-        fields = 'publishing_houses'
+        fields = ['publishing_houses']
