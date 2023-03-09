@@ -61,8 +61,9 @@ class BookstoreDetail(generics.GenericAPIView):
                 else:
                     new_publishing_houses_list.append(publishing_house)
             if len(old_publishing_houses_list) > 0:
-                    return Response({"status": "fail", "message": "this publishing houses already are in this bookstore", "existing_publishing_houses":old_publishing_houses_list},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status": "fail", "message": "this publishing houses already are in this bookstore",
+                                 "existing_publishing_houses": old_publishing_houses_list},
+                                status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "bookstore": serializer.data})
@@ -115,7 +116,8 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
                 else:
                     new_publishing_houses_list.append(publishing_house)
             if len(old_publishing_houses_list) > 0:
-                return Response({"status": "fail", "message": "this publishing house already are in this bookstore", "existing_publishing_houses":old_publishing_houses_list},
+                return Response({"status": "fail", "message": "this publishing house already are in this bookstore",
+                                 "existing_publishing_houses": old_publishing_houses_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for publishing_house in new_publishing_houses_list:
@@ -143,7 +145,9 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
                 else:
                     old_publishing_house_list.append(publishing_house)
             if len(new_publishing_house_list) > 0:
-                return Response({"status": "fail", "message": "this publishing house arent't in this bookstore", "publishing_houses_to_remove":new_publishing_house_list,"existing_publishing_houses":old_publishing_house_list},
+                return Response({"status": "fail", "message": "this publishing house arent't in this bookstore",
+                                 "publishing_houses_to_remove": new_publishing_house_list,
+                                 "existing_publishing_houses": old_publishing_house_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for publishing_house in old_publishing_house_list:

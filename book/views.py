@@ -59,8 +59,8 @@ class BookDetail(generics.GenericAPIView):
                     new_bookstore_list.append(bookstore)
             if len(old_bookstore_list) > 0:
                 return Response({"status": "fail", "message": "this books already is in this bookstores",
-                                     "bookstores": old_bookstore_list},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                                 "bookstores": old_bookstore_list},
+                                status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "book": serializer.data})
@@ -102,7 +102,7 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
             return Response({"status": "fail", "message": f"Book with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(book,data=request.data, partial=True)
+        serializer = self.serializer_class(book, data=request.data, partial=True)
         if serializer.is_valid():
 
             new_bookstore_list = []
@@ -113,7 +113,8 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
                 else:
                     new_bookstore_list.append(bookstore)
             if len(old_bookstore_list) > 0:
-                return Response({"status": "fail", "message": "this books already is in this bookstores", "bookstores":old_bookstore_list},
+                return Response({"status": "fail", "message": "this books already is in this bookstores",
+                                 "bookstores": old_bookstore_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for bookstore in new_bookstore_list:
@@ -143,7 +144,8 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
                     old_bookstore_list.append(bookstore)
 
             if len(new_bookstore_list) > 0:
-                return Response({"status": "fail", "message": "this book isn't in this bookstores", "bookstores_to_remove":new_bookstore_list,"existing_bookstores":old_bookstore_list},
+                return Response({"status": "fail", "message": "this book isn't in this bookstores",
+                                 "bookstores_to_remove": new_bookstore_list, "existing_bookstores": old_bookstore_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for bookstore in old_bookstore_list:
