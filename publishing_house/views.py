@@ -23,8 +23,7 @@ class PublishingHousesView(generics.GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "publishing_house": serializer.data}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PublishingHouseDetail(generics.GenericAPIView):
@@ -66,10 +65,10 @@ class PublishingHouseDetail(generics.GenericAPIView):
             return Response({"status": "fail", "message": f"Publishing House with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        if len(Book.objects.all().filter(publishing_house=pk)) > 0:
+        if len(Book.objects.filter(publishing_house=pk)) > 0:
             return Response({"status": "fail", "message": 'you cannot delete publishing house with books in it'},
                             status=status.HTTP_400_BAD_REQUEST)
 
         publishing_house.delete()
-        return Response({"status": "success", "message": "publishing_house deleted successfully"},
+        return Response({"status": "success", "message": "publishing house deleted successfully"},
                         status=status.HTTP_204_NO_CONTENT)

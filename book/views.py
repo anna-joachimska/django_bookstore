@@ -19,8 +19,7 @@ class BooksView(generics.GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "book": serializer.data}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookDetail(generics.GenericAPIView):
@@ -49,18 +48,6 @@ class BookDetail(generics.GenericAPIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.serializer_class(book, data=request.data, partial=True)
-        if 'bookstores' in request.data.keys():
-            new_bookstore_list = []
-            old_bookstore_list = []
-            for bookstore in request.data['bookstores']:
-                if book.bookstores.filter(pk=bookstore).exists():
-                    old_bookstore_list.append(bookstore)
-                else:
-                    new_bookstore_list.append(bookstore)
-            if len(old_bookstore_list) > 0:
-                return Response({"status": "fail", "message": "this books already is in this bookstores",
-                                 "bookstores": old_bookstore_list},
-                                status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "book": serializer.data})
@@ -114,7 +101,7 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
                     new_bookstore_list.append(bookstore)
             if len(old_bookstore_list) > 0:
                 return Response({"status": "fail", "message": "this books already is in this bookstores",
-                                 "bookstores": old_bookstore_list},
+                                 "existing_bookstores": old_bookstore_list, "new_bookstores": new_bookstore_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for bookstore in new_bookstore_list:

@@ -22,8 +22,7 @@ class BookstoresView(generics.GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "bookstore": serializer.data}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookstoreDetail(generics.GenericAPIView):
@@ -52,18 +51,6 @@ class BookstoreDetail(generics.GenericAPIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.serializer_class(bookstore, data=request.data, partial=True)
-        if 'publishing_houses' in request.data.keys():
-            new_publishing_houses_list = []
-            old_publishing_houses_list = []
-            for publishing_house in request.data['publishing_houses']:
-                if bookstore.publishing_houses.filter(pk=publishing_house).exists():
-                    old_publishing_houses_list.append(publishing_house)
-                else:
-                    new_publishing_houses_list.append(publishing_house)
-            if len(old_publishing_houses_list) > 0:
-                return Response({"status": "fail", "message": "this publishing houses already are in this bookstore",
-                                 "existing_publishing_houses": old_publishing_houses_list},
-                                status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "bookstore": serializer.data})
@@ -117,7 +104,8 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
                     new_publishing_houses_list.append(publishing_house)
             if len(old_publishing_houses_list) > 0:
                 return Response({"status": "fail", "message": "this publishing house already are in this bookstore",
-                                 "existing_publishing_houses": old_publishing_houses_list},
+                                 "existing_publishing_houses": old_publishing_houses_list,
+                                 "new_publishing_houses": new_publishing_houses_list},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 for publishing_house in new_publishing_houses_list:
