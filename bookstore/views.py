@@ -92,9 +92,7 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.serializer_class(bookstore, data=request.data, partial=True)
-
         if serializer.is_valid():
-
             new_publishing_houses_list = []
             old_publishing_houses_list = []
             for publishing_house in request.data['publishing_houses']:
@@ -113,7 +111,6 @@ class AddOrRemovePublishingHouseFromBookstore(generics.GenericAPIView):
 
             return Response(
                 {"status": "success", "message": "publishing house added successfully", "bookstore": serializer.data})
-
         return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):

@@ -91,7 +91,6 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
 
         serializer = self.serializer_class(book, data=request.data, partial=True)
         if serializer.is_valid():
-
             new_bookstore_list = []
             old_bookstore_list = []
             for bookstore in request.data['bookstores']:
@@ -109,7 +108,6 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
 
             return Response(
                 {"status": "success", "message": "bookstore added successfully", "book": serializer.data})
-
         return Response({"status": "fail", "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -118,8 +116,7 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
             return Response({"status": "fail", "message": f"Book with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(
-            book, data=request.data, partial=True)
+        serializer = self.serializer_class(book, data=request.data, partial=True)
 
         if serializer.is_valid():
             new_bookstore_list = []
@@ -129,7 +126,6 @@ class AddOrRemoveBookstoreFromBook(generics.GenericAPIView):
                     new_bookstore_list.append(bookstore)
                 else:
                     old_bookstore_list.append(bookstore)
-
             if len(new_bookstore_list) > 0:
                 return Response({"status": "fail", "message": "this book isn't in this bookstores",
                                  "bookstores_to_remove": new_bookstore_list, "existing_bookstores": old_bookstore_list},

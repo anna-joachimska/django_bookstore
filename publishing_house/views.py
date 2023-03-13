@@ -51,8 +51,7 @@ class PublishingHouseDetail(generics.GenericAPIView):
             return Response({"status": "fail", "message": f"Publishing House with id: {pk} not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(
-            publishing_house, data=request.data, partial=True)
+        serializer = self.serializer_class(publishing_house, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "publishing_house": serializer.data})
